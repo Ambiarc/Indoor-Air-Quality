@@ -1,0 +1,82 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "buildingId": "B00001",
+                "floorId": "L006",
+                "label": "Information ",
+                "fontSize": 26,
+                "category": "Label",
+                "location": "Default",
+                "partialPath": "Information",
+                "showOnCreation": true,
+                "type": "Icon",
+                "showToolTip": false,
+                "tooltipTitle": "",
+                "tooltipBody": "",
+                "base64": "../css/icons/ic_admin_info_v2.png"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    121.457275390625,
+                    31.23745346069336
+                ]
+            },
+            "user_properties": {}
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "buildingId": "B00001",
+                "floorId": "L006",
+                "label": "asdasasd",
+                "fontSize": 26,
+                "category": "Label",
+                "location": "Default",
+                "partialPath": "Information",
+                "showOnCreation": true,
+                "type": "IconWithText",
+                "showToolTip": false,
+                "tooltipTitle": "",
+                "tooltipBody": "",
+                "base64": "../css/icons/ic_admin_info_v2.png"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    121.4571762084961,
+                    31.238832473754883
+                ]
+            },
+            "user_properties": {}
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "buildingId": "B00001",
+                "floorId": "L006",
+                "label": "ekrrrrrrrrrrrrr",
+                "fontSize": 26,
+                "category": "Label",
+                "location": "Default",
+                "partialPath": "Information",
+                "showOnCreation": true,
+                "type": "Text",
+                "showToolTip": false,
+                "tooltipTitle": "",
+                "tooltipBody": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    121.45679473876953,
+                    31.238571166992188
+                ]
+            },
+            "user_properties": {}
+        }
+    ]
+}
