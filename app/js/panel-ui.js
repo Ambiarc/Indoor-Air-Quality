@@ -98,6 +98,16 @@ var onAmbiarcLoaded = function() {
     });
     ambiarc.registerForEvent(ambiarc.eventLabel.CameraMotionCompleted, cameraCompletedHandler);
     ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelected, onFloorSelected);
+
+    collectAirData()
+        .then(function(airData){
+            updateAirData(airData);
+        });
+
+    //refreshin air data every 5 minutes
+    window.setInterval(function(airData){
+        collectAirData(airData)
+    }, 300000);
 };
 
 var cameraCompletedHandler = function(event){
@@ -120,20 +130,38 @@ var cameraCompletedHandler = function(event){
     }
 }
 
-var addFloorToFloor = function(fID, bID, name) {
-    var item = $("#floorListTemplate").clone().removeClass("invisible").appendTo($("#floorContainer"));
-    item.children("a.floorName").text("" + name).on("click", function() {
-        var ambiarc = $("#ambiarcIframe")[0].contentWindow.Ambiarc;
-        console.log( $("#currentFloor"));
-        if (fID != undefined) {
-            ambiarc.focusOnFloor(bID, fID);
-            $("#currentFloor").text(name);
-        } else {
-            ambiarc.viewFloorSelector(bID);
-            $("#currentFloor").text(name);
-        }
+//fetching data for all receivers ids - once all data are fetched, we're updating UI data
+var collectAirData = function () {
+    return new Promise(function (resolve, reject) {
+        var urlBase = 'https://api.qlear.io/v1/monitors/latest?token='+config.gigaToken+'&identifier=';
+        var promisesArray = [];
+        var airDataArray = [];
+
+        config.sensorsData.forEach((element) => {
+            var fullUrl = urlBase + element;
+            var test = new Promise(function (resolve, reject) {
+                fetch(fullUrl)
+                    .then(res => res.json())
+                    .then((out) => {
+                        airDataArray.push(out);
+                        resolve();
+                    });
+            });
+            promisesArray.push(test);
+        });
+
+        Promise.all(promisesArray)
+            .then(function () {
+                resolve(airDataArray);
+            });
     });
 };
+
+// updating UI data after air data are fetched with API call
+var updateAirData = function(airData){
+    console.log("update air data function!");
+    console.log(airData);
+}
 
 // closes the floor menu when a floor was selected
 var onFloorSelected = function(event) {
