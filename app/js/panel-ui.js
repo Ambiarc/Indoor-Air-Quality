@@ -84,6 +84,7 @@ var onAmbiarcLoaded = function() {
     fillBuildingsList()
         .then(function(){
             $('#bootstrap').removeAttr('hidden');
+            $('#controls-section').fadeIn();
         });
 
     // loading imported labels and associating maplabel ids with directory ids
