@@ -58,24 +58,57 @@ var iframeLoaded = function() {
     $("#ambiarcIframe")[0].contentWindow.document.addEventListener('AmbiarcAppInitialized', function() {
         onAmbiarcLoaded();
     });
-}
+};
+
+var fillBuildingsList = function(){
+    var bldgListItem = document.createElement('option');
+    bldgListItem.clasName = 'bldg-list-item';
+    bldgListItem.value = 'Exterior';
+    bldgListItem.textContent = 'Exterior';
+    $('#bldg-floor-select').append(bldgListItem);
+
+    ambiarc.getAllBuildings(function(buildings){
+        mainBldgID = buildings[0];
+        currentBuildingId = buildings[0];
+        currentFloorId = null;
+
+        $.each(buildings, function(id, bldgValue){
+            var bldgListItem = document.createElement('option');
+                bldgListItem.clasName = 'bldg-list-item';
+                bldgListItem.value = bldgValue;
+                bldgListItem.textContent = bldgValue;
+            var floorList = document.createElement('select');
+                floorList.className = 'poi-floor-id poi-details-input form-control';
+                floorList.setAttribute('data-bldgId', bldgValue);
+
+            // main building-floor dropdown
+            ambiarc.getAllFloors(bldgValue, function(floors){
+                floors.sort(function(a,b){
+                    if(a.positionIndex < b.positionIndex) return 1;
+                    if(a.positionIndex > b.positionIndex) return -1;
+                    return 0;
+                });
+
+                $.each(floors, function(i, floorValue){
+                    var listItem = document.createElement('option');
+                        listItem.clasName = 'bldg-floor-item';
+                        listItem.value = bldgValue+'::'+floorValue.id;
+                        listItem.textContent = config.floorNames[floorValue.id];
+                    $('#bldg-floor-select').append(listItem);
+                });
+            });
+        });
+        var exteriorListItem = document.createElement('option');
+        exteriorListItem.clasName = 'bldg-list-item';
+        exteriorListItem.value = 'Exterior';
+        exteriorListItem.textContent = 'Exterior';
+        $('#poi-bulding-id').prepend(exteriorListItem);
+    });
+};
 
 var onAmbiarcLoaded = function() {
     ambiarc = $("#ambiarcIframe")[0].contentWindow.Ambiarc;
-
-    console.log("ambiarc loaded:");
-    console.log(ambiarc);
-
-    ambiarc.getAllBuildings((bldgs) => {
-        console.log("all building:");
-        console.log(bldgs);
-        mainBldgID = bldgs[0];
-
-        ambiarc.getAllFloors(mainBldgID, (floors) => {
-            console.log("all floors:");
-            console.log(floors);
-        });
-    });
+    fillBuildingsList();
 
     // loading imported labels and associating maplabel ids with directory ids
     ambiarc.loadRemoteMapLabels('Build/geodata.json')
@@ -86,8 +119,7 @@ var onAmbiarcLoaded = function() {
             ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
         });
     });
-}
-
+};
 
 var addFloorToFloor = function(fID, bID, name) {
     var item = $("#floorListTemplate").clone().removeClass("invisible").appendTo($("#floorContainer"));
