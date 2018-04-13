@@ -1,51 +1,43 @@
 <html>
     <head>
-
         <title>Air Quality</title>
         <meta charset="UTF-8">
 
         <!-- jquery resorrces -->
         <script src="js/jquery-2.2.4.min.js"></script>
-
         <!--bootstrap resources-->
         <script src="js/bootstrap/bootstrap.min.js"></script>
         <script src="js/BootstrapMenu.min.js"></script>
         <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
-
         <!-- font awesome resources -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
         <!-- app css resources -->
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/embed-style.css">
-
         <!-- app js resources -->
         <script src="js/config.js "></script>
         <script src="js/panel-ui.js "></script>
         <script src="js/move-controls-ui.js "></script>
-
         <!-- select2 -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-
     </head>
 
     <body style="pointer-events: none">
 
         <div id="main_container" class="container-fluid" style="z-index:100;">
             <div id="bootstrap" hidden>
-
-                <div class="separate-block buttons_row">
-                    <div class="col-sm-6 floor_select_btn map_view">
-                        Floor:
-                    </div>
-
-                    <div class="col-sm-6 floor_select_btn select_wrapper" style="pointer-events: all">
-                        <select id="bldg-floor-select"></select>
+                <div class="container-fluid" style="z-index:100;">
+                    <div id="panel-ui" class="">
+                        <div class="separate-block buttons_row row">
+                            <div class="col-sm-6 floor_select_btn map_view">Floor:</div>
+                            <div class="col-sm-6 floor_select_btn select_wrapper" style="pointer-events: all">
+                                <select id="bldg-floor-select"></select>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
 

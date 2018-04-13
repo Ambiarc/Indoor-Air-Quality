@@ -81,8 +81,10 @@ input[type='checkbox'] {
     margin-bottom: 20px;
 }
 
-.panel-section .separate-block.row {
+.separate-block.row {
     margin-top: 30px;
+    max-width: 300px;
+    display: flex;
 }
 
 .panel-body-row {
@@ -111,49 +113,6 @@ input[type='checkbox'] {
     font-weight: 500;
     font-size: 1.2rem;
     cursor: pointer;
-}
-
-.imp-exp-btn.col-sm {
-    padding: 5px;
-    text-align: center;
-}
-
-.imp-exp-btn.select_wrapper {
-    display: flex;
-    padding: 0;
-    flex: 2;
-}
-
-.imp-exp-btn select {
-    padding: 5px;
-    border: 0px;
-    width: 100%;
-}
-
-.imp-exp-btn.map_view {
-    color: #7d7d7e;
-}
-
-.ui-item {
-    max-width: 270px;
-}
-
-#main-panel .btn {
-    font-size: 1.3rem;
-}
-
-.panel.panel-default.poi-container {
-    width: 100%;
-}
-
-.panel-body {
-    font-size: 1.1rem;
-    position: relative;
-    overflow-y: scroll;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    padding-left: 0px!important;
-    padding-right: 0px!important;
 }
 
 #controls-section {
@@ -353,251 +312,11 @@ input[type='checkbox'] {
     font-weight: 400;
 }
 
-.poi-details-panel,
-.poi-list-panel {
-    transition: display 0.5s;
-}
-
-.poi-details-name {
-    width: 100%;
-    height: 30px;
-}
-
-.poi-details-select {
-    padding: 0;
-    height: 20px;
-}
-
-.btn-basic {
-    background-color: #808080;
-    color: #FFFFFF;
-}
-
-.saved-btn {
-    display: none;
-    transition: all 0.5s;
-}
-
-.saved-btn span{
-    text-align: right;
-    color: #28a745!important;
-}
-
-#details-panel .header-button {
-    height: 30px;
-}
-
-.header-button span {
-    color: #FFFFFF;
-}
-
-.header-button .poi-icon {
-    width: 20px;
-    height: 20px;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
-    display: inline-block;
-    float: left;
-}
 
 .header-button * {
     cursor: pointer;
 }
 
-.btn-success {
-    backgroundd-color: #5eb861!important;
-}
-
-.btn-primary {
-    background-color: #1175d3!important;
-}
-
-.last-row {
-    height: 70px;
-    border-bottom: 1px solid #D3D3D3;
-}
-
-#delete-point-section {
-    padding-top: 5px;
-}
-
-.tooltip-body {
-    display: block;
-    width: 100%;
-}
-
-.form-icon {
-    width: 20px;
-    height: 20px;
-}
-
-.no-right-padding {
-    padding-right: 0!important;
-}
-
-.import-poi-file {
-    display: none!important;
-}
-
-#con-file-hidden {
-    display: none!important;
-}
-
-#poi-browse-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-#poi-browse-icons {
-    height: 25px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 50px;
-}
-
-#poi-browse-icons button {
-    font-size: 1.1rem!important;
-    text-align: center;
-    padding: 0;
-
-}
-
-.poi-icon-image {
-    width: 3rem;
-    height: 2.8rem;
-}
-
-#poi-select-icon {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.centered-label {
-    margin: auto;
-    text-align: center;
-}
-
-#icon-file-hidden {
-    display: none!important;
-}
-
-#poi-icon-image {
-    background-size: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: auto;
-}
-
-.icon-sample {
-    width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-    cursor: pointer;
-    padding: 5px;
-}
-
-
-.icons-list-panel .row {
-    margin: 0;
-}
-
-.selected-icon {
-    background-color: #5db860;
-}
-
-.panel-body-row.icons-list-panel {
-    height: 100%;
-    overflow-y: scroll;
-}
-
-.panel-body-row .icons-container {
-    overflow: hidden;
-    margin-bottom: 0;
-}
-
-.icon-btn-wrapper {
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-#poi-key-value-list {
-    list-style: none;
-    padding: 0;
-}
-
-.pair-key-row {
-    width: 100%;
-}
-
-.pair-key-row .list-icon-wrapper {
-    padding: 0;
-    padding-top: 31px;
-}
-
-.pair-type {
-    font-size: 1rem!important;
-}
-
-.sorting-section {
-    display: none;
-    margin-bottom: 15px;
-}
-
-.sorting-section .btn{
-    border: 1px solid #D3D3D3;
-}
-
-.themes-section {
-    margin-bottom: 15px;
-}
-
-.themes-section .btn {
-    border: 1px solid #D3D3D3;
-}
-
-.sort-label {
-    color: #9f9e9e;
-    font-size: 1rem;
-    font-weight: 400;
-}
-
-.notification-text {
-    color: #7ac7e5;
-    font-size: 1rem;
-}
-
-.key-value-icon {
-    background-color: #D3D3D3;
-    color: #000000;
-    padding: 4px;
-    margin: 1px;
-    font-size: 1.2rem!important;
-    cursor: pointer;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.delete-pair {
-    color: #FFFFFF;
-    background-color: #d75253;
-    margin-left: 10px;
-}
-
-.selected-value-type {
-    background-color: #1a78d7;
-    color: #FFFFFF;
-}
-
-.colorpicker_field {
-    width: 100%;
-}
 
 .colorpicker {
     pointer-events: all;
@@ -642,3 +361,90 @@ input[type='checkbox'] {
     position:fixed;
     pointer-events: all;
 }
+
+
+/* LEFT PANEL UI */
+
+#panel-ui {
+    max-width: 300px;
+    pointer-events: all;
+}
+
+#panel-ui * {
+    pointer-events: all;
+}
+
+/*****************************************/
+
+
+/* FLOOR SELECTOR SECTION */
+
+.floor_select_btn {
+    background-color: #fcfefe;
+    font-weight: 500;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: 0px;
+    width: 50%;
+    text-align: center;
+}
+
+.col-sm floor_select_btn.map_view {
+    text-align: center;
+}
+
+.map_view {
+    padding: 5px;
+    color: #7d7d7e;
+    border-right: 1px solid #7d7d7e;
+}
+
+#bldg-floor-select {
+    padding: 5px;
+    width: 100%;
+    border: 0;
+    border-left: 1px solid lightgray;
+}
+
+.select_wrapper {
+    pointer-events: all;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+    padding: 1px;
+}
+
+.floor_select_btn * {
+    pointer-events: all;
+    color: #2c7dca!important;
+}
+
+.floor_select_btn .select2 {
+    width: 100%!important;
+}
+
+.floor_select_btn .select2-selection {
+    border-radius: 0!important;
+    border: 0!important;
+}
+
+.select2-search.select2-search--dropdown{
+    display:none;
+}
+
+.select2-results * {
+    pointer-events: all!important;
+}
+
+.hidden_selector {
+    display: none;
+}
+
+#select2-bldg-floor-select-container {
+    line-height: 2.5rem;
+}
+
+.select2-results {
+    font-size: 1.2rem;
+}
+
+/**********************************************/
