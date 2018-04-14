@@ -1,5 +1,5 @@
 config = {
-    gigaToken: 'efa84ed8-4a9f-45bc-ba36-8dfd106f546e',
+    // gigaToken: '<YOUR GIGA TOKEN>'
     refreshInterval: 10000,
     floorNames: {
             'L001' : 'First Floor',

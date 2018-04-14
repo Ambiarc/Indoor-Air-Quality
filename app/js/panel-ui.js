@@ -162,9 +162,15 @@ var collectAirData = function () {
 
 // updating UI data after air data are fetched with API call
 var updateAirData = function(airData){
-    console.log("update air data function!");
-    console.log(airData);
-}
+    var averageData = calculateAverageData(airData);
+    updateUIPanel(averageData)
+};
+
+var updateUIPanel = function(averageData){
+    for(var key in averageData){
+        $('.air-data-value').find('[data-unit="'+key+'"]').html(averageData[key]);
+    }
+};
 
 // closes the floor menu when a floor was selected
 var onFloorSelected = function(event) {
@@ -189,6 +195,34 @@ var onFloorSelected = function(event) {
     }
     console.log("Ambiarc received a FloorSelected event with a buildingId of " + floorInfo.buildingId + " and a floorId of " + floorInfo.floorId);
 };
+
+
+var calculateAverageData = function(dataArray){
+    var totalsArray = [];
+    var elementsNum = dataArray.length;
+
+    dataArray.forEach((elementsArray, i) => {
+        for (var key in elementsArray) {
+            if(!totalsArray[key]){
+                if(!isNaN(elementsArray[key]) && typeof elementsArray[key] !== 'boolean'){
+                    totalsArray[key] = parseFloat(elementsArray[key]);
+                }
+            }
+            else {
+                if(!isNaN(elementsArray[key]) && typeof elementsArray[key] !== 'boolean'){
+                    totalsArray[key] += parseFloat(elementsArray[key]);
+                }
+            }
+        }
+    });
+    for(var key in totalsArray){
+        totalsArray[key] /= elementsNum;
+        totalsArray[key] = parseFloat(totalsArray[key].toFixed(3));
+    };
+
+    return totalsArray;
+};
+
 
 $(document).ready(function() {
 
