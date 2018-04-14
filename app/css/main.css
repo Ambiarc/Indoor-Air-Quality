@@ -307,13 +307,13 @@ input[type='checkbox'] {
 }
 
 .poi-details-panel label {
-    color: #9f9e9e;
+    color: #a1a1a1;
     font-size: 1rem;
     font-weight: 400;
 }
 
 .poi-details-panel span {
-    color: #9f9e9e;
+    color: #a1a1a1;
     font-size: 1rem;
     font-weight: 400;
 }
@@ -373,7 +373,7 @@ input[type='checkbox'] {
 
 #panel-ui {
     padding-top: 30px;
-    max-width: 230px;
+    max-width: 300px;
     pointer-events: all;
     display: flex;
     height: 100%;
@@ -392,6 +392,8 @@ input[type='checkbox'] {
     padding-bottom: 15px;
     margin-bottom: 30px;
     color: #7d7d7e;
+    overflow-y: auto;
+    border-radius: 5px;
 }
 
 #air-data .row {
@@ -399,14 +401,21 @@ input[type='checkbox'] {
 }
 
 .air-data-values {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
+.air-data-value {
+    color: #2c7dca;
+}
+
 .air-data-header {
     font-size: 1.3rem;
+    font-weight: bold;
     padding-top: 15px;
+    border-bottom: 1px solid lightgray;
+    margin-bottom: 15px;
 }
 
 /*****************************************/
