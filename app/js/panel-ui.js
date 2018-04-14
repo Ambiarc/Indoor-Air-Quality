@@ -1,27 +1,11 @@
 var mainBldgID;
 var currentFloorId;
 var currentBuildingId;
-var poiMenuSelector;
 var isFloorSelectorEnabled = false;
-var poisInScene = [];
+var sensors = {};
 
 //global ambiarc object
-var ambiarc
-
-var dropdownClicked = function() {
-    if (!isFloorSelectorEnabled) {
-        $("#levels-dropdown").addClass('open');
-        $("#levels-dropdown-button").attr('aria-expanded', true);
-        isFloorSelectorEnabled = true;
-    } else {
-        $("#levels-dropdown").removeClass('open');
-        $("#levels-dropdown-button").attr('aria-expanded', false);
-        isFloorSelectorEnabled = false;
-        $("#currentFloor").text("Exterior");
-    }
-    var ambiarc = $("#ambiarcIframe")[0].contentWindow.Ambiarc;
-    ambiarc.viewFloorSelector(mainBldgID);
-};
+var ambiarc;
 
 var iframeLoaded = function() {
     $("#ambiarcIframe")[0].contentWindow.document.addEventListener('AmbiarcAppInitialized', function() {
@@ -33,9 +17,9 @@ var fillBuildingsList = function(){
 
     return new Promise(function(resolve, reject){
         var bldgListItem = document.createElement('option');
-        bldgListItem.clasName = 'bldg-list-item';
-        bldgListItem.value = 'Exterior';
-        bldgListItem.textContent = 'Exterior';
+            bldgListItem.clasName = 'bldg-list-item';
+            bldgListItem.value = 'Exterior';
+            bldgListItem.textContent = 'Exterior';
         $('#bldg-floor-select').append(bldgListItem);
 
         ambiarc.getAllBuildings(function(buildings){
@@ -45,12 +29,12 @@ var fillBuildingsList = function(){
 
             $.each(buildings, function(id, bldgValue){
                 var bldgListItem = document.createElement('option');
-                bldgListItem.clasName = 'bldg-list-item';
-                bldgListItem.value = bldgValue;
-                bldgListItem.textContent = bldgValue;
+                    bldgListItem.clasName = 'bldg-list-item';
+                    bldgListItem.value = bldgValue;
+                    bldgListItem.textContent = bldgValue;
                 var floorList = document.createElement('select');
-                floorList.className = 'poi-floor-id poi-details-input form-control';
-                floorList.setAttribute('data-bldgId', bldgValue);
+                    floorList.className = 'poi-floor-id poi-details-input form-control';
+                    floorList.setAttribute('data-bldgId', bldgValue);
 
                 // main building-floor dropdown
                 ambiarc.getAllFloors(bldgValue, function(floors){
@@ -62,114 +46,21 @@ var fillBuildingsList = function(){
 
                     $.each(floors, function(i, floorValue){
                         var listItem = document.createElement('option');
-                        listItem.clasName = 'bldg-floor-item';
-                        listItem.value = bldgValue+'::'+floorValue.id;
-                        listItem.textContent = config.floorNames[floorValue.id];
+                            listItem.clasName = 'bldg-floor-item';
+                            listItem.value = bldgValue+'::'+floorValue.id;
+                            listItem.textContent = config.floorNames[floorValue.id];
                         $('#bldg-floor-select').append(listItem);
                     });
                     resolve();
                 });
             });
             var exteriorListItem = document.createElement('option');
-            exteriorListItem.clasName = 'bldg-list-item';
-            exteriorListItem.value = 'Exterior';
-            exteriorListItem.textContent = 'Exterior';
+                exteriorListItem.clasName = 'bldg-list-item';
+                exteriorListItem.value = 'Exterior';
+                exteriorListItem.textContent = 'Exterior';
             $('#poi-bulding-id').prepend(exteriorListItem);
         });
     })
-};
-
-var onAmbiarcLoaded = function() {
-    ambiarc = $("#ambiarcIframe")[0].contentWindow.Ambiarc;
-    fillBuildingsList()
-        .then(function(){
-            $('#bootstrap').removeAttr('hidden');
-            $('#controls-section').fadeIn();
-        });
-
-    // loading imported labels and associating maplabel ids with directory ids
-    ambiarc.loadRemoteMapLabels('Build/geodata.json')
-        .then((mapLabels) => {
-        mapLabels.forEach((element, i) => {
-            var mapLabelInfo = element.properties;
-            var directoryId = element.user_properties.directoryId;
-            ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
-        });
-    });
-    ambiarc.registerForEvent(ambiarc.eventLabel.CameraMotionCompleted, cameraCompletedHandler);
-    ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelected, onFloorSelected);
-
-    collectAirData()
-        .then(function(airData){
-            updateAirData(airData);
-        });
-
-    //refreshin air data every 5 minutes
-    window.setInterval(function(airData){
-        collectAirData(airData)
-            .then(function(airData){
-                updateAirData(airData);
-            });
-    }, config.refreshInterval);
-};
-
-var cameraCompletedHandler = function(event){
-    if(currentFloorId == null){
-        $('#bldg-floor-select').val('Exterior');
-    }
-    else {
-        $('#bldg-floor-select').val(currentBuildingId+'::'+currentFloorId);
-    }
-
-    // 1000 is id for exterior
-    if(event.detail == 1000){
-        console.log("REGISTERED 1000, CALLING EXTERIOR!!!")
-        ambiarc.focusOnFloor(mainBldgID, null);
-        currentFloorId = null;
-        $('#bldg-floor-select').val('Exterior');
-        console.log("setting to exterior!!");
-        console.log($('#bldg-floor-select').val());
-        isFloorSelectorEnabled = false;
-    }
-}
-
-//fetching data for all receivers ids - once all data are fetched, we're updating UI data
-var collectAirData = function () {
-    return new Promise(function (resolve, reject) {
-        var urlBase = 'https://api.qlear.io/v1/monitors/latest?token='+config.gigaToken+'&identifier=';
-        var promisesArray = [];
-        var airDataArray = [];
-
-        config.sensorsData.forEach((element) => {
-            var fullUrl = urlBase + element;
-            var test = new Promise(function (resolve, reject) {
-                fetch(fullUrl)
-                    .then(res => res.json())
-                    .then((out) => {
-                        airDataArray.push(out);
-                        resolve();
-                    });
-            });
-            promisesArray.push(test);
-        });
-
-        Promise.all(promisesArray)
-            .then(function () {
-                resolve(airDataArray);
-            });
-    });
-};
-
-// updating UI data after air data are fetched with API call
-var updateAirData = function(airData){
-    var averageData = calculateAverageData(airData);
-    updateUIPanel(averageData)
-};
-
-var updateUIPanel = function(averageData){
-    for(var key in averageData){
-        $('.air-data-value').find('[data-unit="'+key+'"]').html(averageData[key]);
-    }
 };
 
 // closes the floor menu when a floor was selected
@@ -193,10 +84,99 @@ var onFloorSelected = function(event) {
         $("#levels-dropdown-button").attr('aria-expanded', false);
         isFloorSelectorEnabled = false;
     }
-    console.log("Ambiarc received a FloorSelected event with a buildingId of " + floorInfo.buildingId + " and a floorId of " + floorInfo.floorId);
 };
 
+var cameraCompletedHandler = function(event){
+    if(currentFloorId == null){
+        $('#bldg-floor-select').val('Exterior');
+    }
+    else {
+        $('#bldg-floor-select').val(currentBuildingId+'::'+currentFloorId);
+    }
 
+    // 1000 is id for exterior
+    if(event.detail == 1000){
+        console.log("REGISTERED 1000, CALLING EXTERIOR!!!")
+        ambiarc.focusOnFloor(mainBldgID, null);
+        currentFloorId = null;
+        $('#bldg-floor-select').val('Exterior');
+        console.log("setting to exterior!!");
+        console.log($('#bldg-floor-select').val());
+        isFloorSelectorEnabled = false;
+    }
+    else refreshData();
+}
+
+var refreshData = function(){
+    var sensorId = getFloorSensor();
+    if(sensorId !== undefined){
+        getSensorData(sensorId)
+            .then(function(airData){
+                updateUIPanel(airData);
+            });
+    }
+    else {
+        getAllAirData()
+            .then(function(airData){
+                var avgData = calculateAverageData(airData);
+                updateUIPanel(avgData);
+            });
+    }
+};
+
+//fetching data for all receivers ids - once all data are fetched, we're updating UI data
+var getAllAirData = function () {
+    return new Promise(function (resolve, reject) {
+        var urlBase = 'https://api.qlear.io/v1/monitors/latest?token='+config.gigaToken+'&identifier=';
+        var promisesArray = [];
+        var airDataArray = [];
+
+        config.sensorsData.forEach((element) => {
+            var fullUrl = urlBase + element;
+            var fetchSensorData = new Promise(function (resolve, reject) {
+                fetch(fullUrl)
+                    .then(res => res.json())
+                    .then((out) => {
+                        airDataArray.push(out);
+                        resolve();
+                    });
+            });
+            promisesArray.push(fetchSensorData);
+        });
+
+        Promise.all(promisesArray)
+            .then(function () {
+                resolve(airDataArray);
+            });
+    });
+};
+
+//fetching data for selected sensor
+var getSensorData = function(sensorId){
+    return new Promise(function (resolve, reject) {
+        var fullUrl = 'https://api.qlear.io/v1/monitors/latest?token='+config.gigaToken+'&identifier='+sensorId;
+        fetch(fullUrl)
+            .then(res => res.json())
+            .then((out) => {
+                for(var key in out){
+                    //checking if object key is number so we can round it to 3 decimal spaces
+                    if(!isNaN(out[key]) && typeof out[key] !== 'boolean'){
+                        out[key] = parseFloat(out[key].toFixed(3));
+                    }
+                };
+                resolve(out);
+            });
+    });
+};
+
+//updating data in UI panel
+var updateUIPanel = function(data){
+    for(var key in data){
+        $('.air-data-value').find('[data-unit="'+key+'"]').html(data[key]);
+    }
+};
+
+//calculating average data if floor not selected
 var calculateAverageData = function(dataArray){
     var totalsArray = [];
     var elementsNum = dataArray.length;
@@ -223,6 +203,41 @@ var calculateAverageData = function(dataArray){
     return totalsArray;
 };
 
+//fetching sensor id for current floor
+var getFloorSensor = function(){
+    for(var key in sensors){
+        if(sensors[key] == currentFloorId){
+            console.log("found match!!!!!!");
+            console.log(key);
+            return key;
+        }
+    }
+};
+
+//on ambiarc sdk loaded
+var onAmbiarcLoaded = function() {
+    ambiarc = $("#ambiarcIframe")[0].contentWindow.Ambiarc;
+    ambiarc.poiList = {};
+    fillBuildingsList()
+        .then(function(){
+            $('#bootstrap').removeAttr('hidden');
+            $('#controls-section').fadeIn();
+        });
+
+    // loading imported labels and associating maplabel ids with directory ids
+    ambiarc.loadRemoteMapLabels('Build/geodata.json')
+        .then((mapLabels) => {
+            mapLabels.forEach((element, i) => {
+                var mapLabelInfo = element.properties;
+                var sensorId = element.user_properties.sensorId;
+                sensors[sensorId] = mapLabelInfo.floorId;
+                ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
+            });
+        });
+    ambiarc.registerForEvent(ambiarc.eventLabel.CameraMotionCompleted, cameraCompletedHandler);
+    ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelected, onFloorSelected);
+};
+
 
 $(document).ready(function() {
 
@@ -236,13 +251,12 @@ $(document).ready(function() {
             currentBuildingId = mainBldgID;
             currentFloorId = null;
             isFloorSelectorEnabled = false;
-            $('#bldg-floor-select').val('Exterior');
             ambiarc.focusOnFloor(currentBuildingId, currentFloorId);
             return;
         }
         var parsedValue = $(this).val().split('::');
-        var currentBuildingId = parsedValue[0];
-        var currentFloorId = parsedValue[1];
+        currentBuildingId = parsedValue[0];
+        currentFloorId = parsedValue[1];
         ambiarc.focusOnFloor(currentBuildingId, currentFloorId);
     });
 
@@ -269,4 +283,7 @@ $(document).ready(function() {
             }
         }
     });
+    refreshData();
+    //refreshing air data every 5 minutes
+    window.setInterval(refreshData, config.refreshInterval);
 });
