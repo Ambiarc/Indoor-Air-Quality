@@ -81,6 +81,12 @@ input[type='checkbox'] {
     margin-bottom: 20px;
 }
 
+.separate-block {
+    background-color: #ffffff;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .separate-block.row {
     margin-top: 30px;
     max-width: 300px;
@@ -366,12 +372,41 @@ input[type='checkbox'] {
 /* LEFT PANEL UI */
 
 #panel-ui {
-    max-width: 300px;
+    padding-top: 30px;
+    max-width: 230px;
     pointer-events: all;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
 }
 
 #panel-ui * {
     pointer-events: all;
+}
+
+#air-data {
+    margin-top: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: #ffffff;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    color: #7d7d7e;
+}
+
+#air-data .row {
+    background-color: #ffffff;
+}
+
+.air-data-values {
+    font-size: 1.4rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.air-data-header {
+    font-size: 1.3rem;
+    padding-top: 15px;
 }
 
 /*****************************************/

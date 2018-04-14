@@ -107,7 +107,10 @@ var onAmbiarcLoaded = function() {
     //refreshin air data every 5 minutes
     window.setInterval(function(airData){
         collectAirData(airData)
-    }, 300000);
+            .then(function(airData){
+                updateAirData(airData);
+            });
+    }, config.refreshInterval);
 };
 
 var cameraCompletedHandler = function(event){
