@@ -113,9 +113,11 @@ var getAirData = function(){
     if(currentFloorId !== null){
         var sensorId = getFloorSensor();
         var airData = sensorsData[sensorId];
+        $('#current-air-data').html(config.floorNames[currentFloorId]);
     }
     else {
         var airData = calculateAverageData(sensorsData);
+        $('#current-air-data').html('Pavilion');
     }
     for(var key in  airData){
         if(!isNaN(airData[key]) && typeof airData[key] !== 'boolean'){
@@ -189,9 +191,9 @@ var updateMarkersData = function(){
             if(sensors[sensorId].labelId == poiKey){
                 var currentMapLabel = ambiarc.poiList[poiKey];
                 var tooltipTitle = currentMapLabel.label;
-                var tooltipBody = 'TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+
+                var tooltipBody = 'TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' C'+
                     '\n' +
-                    'HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+
+                    'HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
                     '\n' +
                     'CO2: '+parseFloat(sensorsData[sensorId].co2.toFixed(3));
                 currentMapLabel.tooltipTitle = tooltipTitle;
