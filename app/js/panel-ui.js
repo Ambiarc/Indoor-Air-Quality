@@ -1,8 +1,9 @@
 var mainBldgID;
-var currentFloorId;
+var currentFloorId = null;
 var currentBuildingId;
 var isFloorSelectorEnabled = false;
 var sensors = {};
+var sensorsData = {};
 
 //global ambiarc object
 var ambiarc;
@@ -100,44 +101,56 @@ var cameraCompletedHandler = function(event){
         ambiarc.focusOnFloor(mainBldgID, null);
         currentFloorId = null;
         $('#bldg-floor-select').val('Exterior');
-        console.log("setting to exterior!!");
-        console.log($('#bldg-floor-select').val());
         isFloorSelectorEnabled = false;
     }
-    else refreshData();
-}
-
-var refreshData = function(){
-    var sensorId = getFloorSensor();
-    if(sensorId !== undefined){
-        getSensorData(sensorId)
-            .then(function(airData){
-                updateUIPanel(airData);
-            });
-    }
     else {
-        getAllAirData()
-            .then(function(airData){
-                var avgData = calculateAverageData(airData);
-                updateUIPanel(avgData);
-            });
+        var airData = getAirData();
+        updateUIPanel(airData)
     }
 };
 
+var getAirData = function(){
+    if(currentFloorId !== null){
+        var sensorId = getFloorSensor();
+        var airData = sensorsData[sensorId];
+    }
+    else {
+        var airData = calculateAverageData(sensorsData);
+    }
+    for(var key in  airData){
+        if(!isNaN(airData[key]) && typeof airData[key] !== 'boolean'){
+            airData[key] = parseFloat(airData[key].toFixed(3));
+        }
+    }
+    return airData;
+};
+
+var refreshData = function(){
+    return new Promise(function(resolve, reject){
+        fetchAirData()
+            .then(function(airData){
+                sensorsData = airData;
+                resolve();
+            });
+    });
+};
+
 //fetching data for all receivers ids - once all data are fetched, we're updating UI data
-var getAllAirData = function () {
+var fetchAirData = function () {
     return new Promise(function (resolve, reject) {
         var urlBase = 'https://api.qlear.io/v1/monitors/latest?token='+config.gigaToken+'&identifier=';
         var promisesArray = [];
-        var airDataArray = [];
+        var airDataArray = {};
 
-        config.sensorsData.forEach((element) => {
+        config.sensorsFloors.forEach((element) => {
             var fullUrl = urlBase + element;
             var fetchSensorData = new Promise(function (resolve, reject) {
                 fetch(fullUrl)
                     .then(res => res.json())
                     .then((out) => {
-                        airDataArray.push(out);
+                        out.id = element;
+                        var obj = {[element]: out};
+                        airDataArray[element] = out;
                         resolve();
                     });
             });
@@ -177,24 +190,25 @@ var updateUIPanel = function(data){
 };
 
 //calculating average data if floor not selected
-var calculateAverageData = function(dataArray){
+var calculateAverageData = function(dataArray) {
     var totalsArray = [];
-    var elementsNum = dataArray.length;
+    var elementsNum = Object.keys(dataArray).length;
 
-    dataArray.forEach((elementsArray, i) => {
-        for (var key in elementsArray) {
-            if(!totalsArray[key]){
-                if(!isNaN(elementsArray[key]) && typeof elementsArray[key] !== 'boolean'){
-                    totalsArray[key] = parseFloat(elementsArray[key]);
+    for (var sensorId in dataArray){
+        for (var key in dataArray[sensorId]) {
+            if (!totalsArray[key]) {
+                if (!isNaN(dataArray[sensorId][key]) && typeof dataArray[sensorId][key] !== 'boolean') {
+                    totalsArray[key] = parseFloat(dataArray[sensorId][key]);
                 }
             }
             else {
-                if(!isNaN(elementsArray[key]) && typeof elementsArray[key] !== 'boolean'){
-                    totalsArray[key] += parseFloat(elementsArray[key]);
+                if (!isNaN(dataArray[sensorId][key]) && typeof dataArray[sensorId][key] !== 'boolean') {
+                    totalsArray[key] += parseFloat(dataArray[sensorId][key]);
                 }
             }
         }
-    });
+    }
+
     for(var key in totalsArray){
         totalsArray[key] /= elementsNum;
         totalsArray[key] = parseFloat(totalsArray[key].toFixed(3));
@@ -207,8 +221,6 @@ var calculateAverageData = function(dataArray){
 var getFloorSensor = function(){
     for(var key in sensors){
         if(sensors[key] == currentFloorId){
-            console.log("found match!!!!!!");
-            console.log(key);
             return key;
         }
     }
@@ -274,8 +286,6 @@ $(document).ready(function() {
         }
         else {
             // call selector mode
-            console.log("floor selector:");
-            console.log(isFloorSelectorEnabled);
             if(isFloorSelectorEnabled) { return; }
             else {
                 ambiarc.viewFloorSelector(mainBldgID);
@@ -283,7 +293,17 @@ $(document).ready(function() {
             }
         }
     });
-    refreshData();
+    refreshData()
+        .then(function(){
+            var avgData = getAirData();
+            updateUIPanel(avgData);
+        });
     //refreshing air data every 5 minutes
-    window.setInterval(refreshData, config.refreshInterval);
+    window.setInterval(function(){
+        refreshData()
+            .then(function(){
+                var airData = getAirData();
+                updateUIPanel(airData);
+        });
+    }, config.refreshInterval);
 });
