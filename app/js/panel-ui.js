@@ -105,7 +105,7 @@ var cameraCompletedHandler = function(event){
     }
     else {
         var airData = getAirData();
-        updateUIPanel(airData)
+        updateUIPanel(airData);
     }
 };
 
@@ -182,6 +182,27 @@ var getSensorData = function(sensorId){
     });
 };
 
+var updateMarkersData = function(){
+    var counter = 0;
+    for(var poiKey in ambiarc.poiList){
+        for(var sensorId in sensors){
+            if(sensors[sensorId].labelId == poiKey){
+                var currentMapLabel = ambiarc.poiList[poiKey];
+                var tooltipTitle = currentMapLabel.label;
+                var tooltipBody = 'TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+
+                    '\n' +
+                    'HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+
+                    '\n' +
+                    'CO2: '+parseFloat(sensorsData[sensorId].co2.toFixed(3));
+                currentMapLabel.tooltipTitle = tooltipTitle;
+                currentMapLabel.tooltipBody = tooltipBody;
+                currentMapLabel.showTooltip = true;
+                ambiarc.updateMapLabel(sensors[sensorId].labelId, currentMapLabel.type, currentMapLabel);
+            }
+        }
+    }
+};
+
 //updating data in UI panel
 var updateUIPanel = function(data){
     for(var key in data){
@@ -213,14 +234,13 @@ var calculateAverageData = function(dataArray) {
         totalsArray[key] /= elementsNum;
         totalsArray[key] = parseFloat(totalsArray[key].toFixed(3));
     };
-
     return totalsArray;
 };
 
 //fetching sensor id for current floor
 var getFloorSensor = function(){
     for(var key in sensors){
-        if(sensors[key] == currentFloorId){
+        if(sensors[key].floorId == currentFloorId){
             return key;
         }
     }
@@ -239,12 +259,17 @@ var onAmbiarcLoaded = function() {
     // loading imported labels and associating maplabel ids with directory ids
     ambiarc.loadRemoteMapLabels('Build/geodata.json')
         .then((mapLabels) => {
+
             mapLabels.forEach((element, i) => {
                 var mapLabelInfo = element.properties;
                 var sensorId = element.user_properties.sensorId;
-                sensors[sensorId] = mapLabelInfo.floorId;
+                sensors[sensorId] = {};
+                sensors[sensorId].floorId = mapLabelInfo.floorId;
+                sensors[sensorId].labelId = mapLabelInfo.id;
+
                 ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
             });
+            updateMarkersData();
         });
     ambiarc.registerForEvent(ambiarc.eventLabel.CameraMotionCompleted, cameraCompletedHandler);
     ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelected, onFloorSelected);
@@ -252,7 +277,6 @@ var onAmbiarcLoaded = function() {
 
 
 $(document).ready(function() {
-
     //initializing selec2 selector
     $('#bldg-floor-select').select2();
     var $body = $(document.body);
@@ -304,6 +328,7 @@ $(document).ready(function() {
             .then(function(){
                 var airData = getAirData();
                 updateUIPanel(airData);
+                updateMarkersData();
         });
     }, config.refreshInterval);
 });
