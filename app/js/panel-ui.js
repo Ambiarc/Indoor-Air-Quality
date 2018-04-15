@@ -191,11 +191,31 @@ var updateMarkersData = function(){
             if(sensors[sensorId].labelId == poiKey){
                 var currentMapLabel = ambiarc.poiList[poiKey];
                 var tooltipTitle = currentMapLabel.label;
+
+                var tooltipBody = '';
+                //dynamically populating tooltip list
+                // for(var airDataKey in sensorsData[sensorId]){
+                //     if(!isNaN(sensorsData[sensorId][airDataKey]) && typeof sensorsData[sensorId][airDataKey] !== 'boolean'){
+                //         tooltipBody += airDataKey+': '+parseFloat(sensorsData[sensorId][airDataKey].toFixed(3))+'\n';
+                //     }
+                // }
+
                 var tooltipBody = 'TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' C'+
                     '\n' +
                     'HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
                     '\n' +
-                    'CO2: '+parseFloat(sensorsData[sensorId].co2.toFixed(3));
+                    'HCHO: '+parseFloat(sensorsData[sensorId].hcho.toFixed(3))+
+                    '\n' +
+                    'CO: '+parseFloat(sensorsData[sensorId].co.toFixed(3))+
+                    '\n' +
+                    'CO2: '+parseFloat(sensorsData[sensorId].co2.toFixed(3))+
+                    '\n' +
+                    'TVOC: '+parseFloat(sensorsData[sensorId].tvoc.toFixed(3))+
+                    '\n' +
+                    'PM2P5: '+parseFloat(sensorsData[sensorId].pm2p5.toFixed(3))+
+                    '\n' +
+                    'PM10: '+parseFloat(sensorsData[sensorId].pm10.toFixed(3));
+
                 currentMapLabel.tooltipTitle = tooltipTitle;
                 currentMapLabel.tooltipBody = tooltipBody;
                 currentMapLabel.showTooltip = true;
