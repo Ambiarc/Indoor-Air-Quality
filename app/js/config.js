@@ -9,7 +9,7 @@ config = {
             'L005' : 'Basement One',
             'L006' : 'Basement Two'
         },
-    sensorsData: [
+    sensorsFloors: [
         1116210704,
         1116210992,
         1116210574
