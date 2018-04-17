@@ -418,6 +418,11 @@ input[type='checkbox'] {
     margin-bottom: 15px;
 }
 
+.measurement-unit {
+    color: #7d7d7e;
+    font-size: 1.2rem;
+}
+
 /*****************************************/
 
 

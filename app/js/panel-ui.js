@@ -201,7 +201,7 @@ var updateMarkersData = function(){
                 // }
 
                 var tooltipBody = 'TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' C'+
-                    '\n' +
+                    '\n &#8451;' +
                     'HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
                     '\n' +
                     'HCHO: '+parseFloat(sensorsData[sensorId].hcho.toFixed(3))+
@@ -295,7 +295,20 @@ var onAmbiarcLoaded = function() {
         });
     ambiarc.registerForEvent(ambiarc.eventLabel.CameraMotionCompleted, cameraCompletedHandler);
     ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelected, onFloorSelected);
+
+    ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelectorEnabled, onEnteredFloorSelector);
+    ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelectorDisabled, onExitedFloorSelector);
 };
+
+var onEnteredFloorSelector = function(){
+    console.log("FLOOR SELECTOR ENABLED!!");
+    isFloorSelectorEnabled = true;
+};
+
+var onExitedFloorSelector = function(){
+    console.log("FLOOR SELECTOR DISABLED!!");
+    isFloorSelectorEnabled = false;
+}
 
 
 $(document).ready(function() {
