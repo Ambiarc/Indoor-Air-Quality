@@ -203,7 +203,7 @@ var updateMarkersData = function(){
                 //     }
                 // }
 
-                var tooltipBody = '<line-height=150%>TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' C'+
+                var tooltipBody = '<line-height=150%>TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' °C'+
                     '\n' +
                     '<line-height=150%>HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
                     '\n' +
@@ -213,11 +213,11 @@ var updateMarkersData = function(){
                     '\n' +
                     '<line-height=150%>CO<sub><size=150%>2</size></sub>: '+parseFloat(sensorsData[sensorId].co2.toFixed(3))+ ' ppm' +
                     '\n' +
-                    '<line-height=150%>TVOC: '+parseFloat(sensorsData[sensorId].tvoc.toFixed(3))+ ' mg/m<sup><size=150%>3</size></sup>'+
+                    '<line-height=150%>TVOC: '+parseFloat(sensorsData[sensorId].tvoc.toFixed(3))+ ' mg/m<sup><size=150%>3</size></sup>' +
                     '\n' +
-                    '<line-height=150%>PM2.5: '+parseFloat(sensorsData[sensorId].pm2p5.toFixed(3))+
+                    '<line-height=150%>PM2.5: '+parseFloat(sensorsData[sensorId].pm2p5.toFixed(3)) + ' µg/m<sup><size=150%>3</size></sup>' +
                     '\n' +
-                    '<line-height=150%>PM10: '+parseFloat(sensorsData[sensorId].pm10.toFixed(3));
+                    '<line-height=150%>PM10: '+parseFloat(sensorsData[sensorId].pm10.toFixed(3)) + ' µg/m<sup><size=150%>3</size></sup>';
 
                 currentMapLabel.tooltipTitle = tooltipTitle;
                 currentMapLabel.tooltipBody = tooltipBody;
