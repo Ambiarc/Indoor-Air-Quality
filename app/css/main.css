@@ -407,7 +407,8 @@ input[type='checkbox'] {
 }
 
 .air-data-value {
-    color: #2c7dca;
+    color: #000000;
+    font-weight: bold;
 }
 
 .air-data-header {

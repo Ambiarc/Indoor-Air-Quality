@@ -291,7 +291,6 @@ var onAmbiarcLoaded = function() {
                         sensors[sensorId].labelId = mapLabelInfo.id;
                         ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
                     });
-                    console.log("DONE");
                     updateMarkersData();
                 });
 
