@@ -190,7 +190,8 @@ var updateMarkersData = function(){
         for(var sensorId in sensors){
             if(sensors[sensorId].labelId == poiKey){
                 var currentMapLabel = ambiarc.poiList[poiKey];
-                var tooltipTitle = currentMapLabel.label;
+                var tooltipTitle = '<size=150%><line-height=150%>'+currentMapLabel.label+'</line-height></size>' +
+                    '\n<size=100%> </size>';
 
                 var tooltipBody = '';
                 //dynamically populating tooltip list
@@ -200,21 +201,21 @@ var updateMarkersData = function(){
                 //     }
                 // }
 
-                var tooltipBody = 'TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' C'+
-                    '\n &#8451;' +
-                    'HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
+                var tooltipBody = '<line-height=150%>TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' C'+
                     '\n' +
-                    'HCHO: '+parseFloat(sensorsData[sensorId].hcho.toFixed(3))+
+                    '<line-height=150%>HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
                     '\n' +
-                    'CO: '+parseFloat(sensorsData[sensorId].co.toFixed(3))+
+                    '<line-height=150%>HCHO: '+parseFloat(sensorsData[sensorId].hcho.toFixed(3))+
                     '\n' +
-                    'CO2: '+parseFloat(sensorsData[sensorId].co2.toFixed(3))+
+                    '<line-height=150%>CO: '+parseFloat(sensorsData[sensorId].co.toFixed(3))+ ' ppm' +
                     '\n' +
-                    'TVOC: '+parseFloat(sensorsData[sensorId].tvoc.toFixed(3))+
+                    '<line-height=150%>CO<sub><size=150%>2</size></sub>: '+parseFloat(sensorsData[sensorId].co2.toFixed(3))+ ' ppm' +
                     '\n' +
-                    'PM2P5: '+parseFloat(sensorsData[sensorId].pm2p5.toFixed(3))+
+                    '<line-height=150%>TVOC: '+parseFloat(sensorsData[sensorId].tvoc.toFixed(3))+ ' mg/m<sup><size=150%>3</size></sup>'+
                     '\n' +
-                    'PM10: '+parseFloat(sensorsData[sensorId].pm10.toFixed(3));
+                    '<line-height=150%>PM2.5: '+parseFloat(sensorsData[sensorId].pm2p5.toFixed(3))+
+                    '\n' +
+                    '<line-height=150%>PM10: '+parseFloat(sensorsData[sensorId].pm10.toFixed(3));
 
                 currentMapLabel.tooltipTitle = tooltipTitle;
                 currentMapLabel.tooltipBody = tooltipBody;
@@ -277,6 +278,9 @@ var onAmbiarcLoaded = function() {
             $('#bootstrap').removeAttr('hidden');
             $('#controls-section').fadeIn();
         });
+
+    // console.log("sending mainbldgid:");
+    // console.log(mainBldgID);
 
     // loading imported labels and associating maplabel ids with directory ids
     ambiarc.loadRemoteMapLabels('Build/geodata.json')

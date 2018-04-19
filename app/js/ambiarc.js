@@ -36,8 +36,8 @@
     };
     this.createMapLabel = function(mapLabelType, maplLabelInfo, idCallback) {
 
-        console.log("creating map label:");
-        console.log(maplLabelInfo);
+        // console.log("creating map label:");
+        // console.log(maplLabelInfo);
 
       this.messageQueue.push(idCallback);
       var json = JSON.stringify({
@@ -194,6 +194,8 @@
             out.features.forEach(function(element) {
               element.properties.latitude = element.geometry.coordinates[1];
               element.properties.longitude = element.geometry.coordinates[0];
+              console.log("before creating!!!!:");
+              console.log(element.properties);
               window.Ambiarc.createMapLabel(element.properties.type, element.properties, function(id) {
                  element.properties.id = id;
               })
