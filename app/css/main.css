@@ -376,7 +376,6 @@ input[type='checkbox'] {
     max-width: 300px;
     pointer-events: all;
     display: flex;
-    height: 100%;
     flex-direction: column;
 }
 
