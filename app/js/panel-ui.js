@@ -199,7 +199,7 @@ var updateMarkersData = function(){
         for(var sensorId in sensors){
             if(sensors[sensorId].labelId == poiKey){
                 var currentMapLabel = ambiarc.poiList[poiKey];
-                var tooltipTitle = '<size=150%><line-height=150%>'+currentMapLabel.label+'</line-height></size>' +
+                var tooltipTitle = '<size=150%><line-height=150%>IAQ Sensor</line-height></size>' +
                     '\n<size=100%> </size>';
 
                 var tooltipBody = '';
