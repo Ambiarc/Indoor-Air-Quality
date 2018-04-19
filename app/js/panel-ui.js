@@ -2,6 +2,7 @@ var mainBldgID;
 var currentFloorId = null;
 var currentBuildingId;
 var isFloorSelectorEnabled = false;
+var allFloors;
 var sensors = {};
 var sensorsData = {};
 
@@ -39,6 +40,7 @@ var fillBuildingsList = function(){
 
                 // main building-floor dropdown
                 ambiarc.getAllFloors(bldgValue, function(floors){
+                    allFloors = floors;
                     floors.sort(function(a,b){
                         if(a.positionIndex < b.positionIndex) return 1;
                         if(a.positionIndex > b.positionIndex) return -1;
@@ -277,26 +279,26 @@ var onAmbiarcLoaded = function() {
         .then(function(){
             $('#bootstrap').removeAttr('hidden');
             $('#controls-section').fadeIn();
+
+            // loading imported sensors labels and associating maplabel ids with directory ids
+            ambiarc.loadRemoteMapLabels('Build/geodata.json', allFloors)
+                .then((mapLabels) => {
+                    mapLabels.forEach((element, i) => {
+                        var mapLabelInfo = element.properties;
+                        var sensorId = element.user_properties.sensorId;
+                        sensors[sensorId] = {};
+                        sensors[sensorId].floorId = mapLabelInfo.floorId;
+                        sensors[sensorId].labelId = mapLabelInfo.id;
+                        ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
+                    });
+                    console.log("DONE");
+                    updateMarkersData();
+                });
+
+            // Loading imported units points
+            ambiarc.loadRemoteMapLabels('Build/output.json', allFloors);
         });
 
-    // console.log("sending mainbldgid:");
-    // console.log(mainBldgID);
-
-    // loading imported labels and associating maplabel ids with directory ids
-    ambiarc.loadRemoteMapLabels('Build/geodata.json')
-        .then((mapLabels) => {
-
-            mapLabels.forEach((element, i) => {
-                var mapLabelInfo = element.properties;
-                var sensorId = element.user_properties.sensorId;
-                sensors[sensorId] = {};
-                sensors[sensorId].floorId = mapLabelInfo.floorId;
-                sensors[sensorId].labelId = mapLabelInfo.id;
-
-                ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
-            });
-            updateMarkersData();
-        });
     ambiarc.registerForEvent(ambiarc.eventLabel.CameraMotionCompleted, cameraCompletedHandler);
     ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelected, onFloorSelected);
 
