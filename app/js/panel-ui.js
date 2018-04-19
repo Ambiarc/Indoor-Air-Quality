@@ -113,18 +113,28 @@ var cameraCompletedHandler = function(event){
 var getAirData = function(){
     if(currentFloorId !== null){
 
-        var sensorsObject = {};
-        var sensorsArray = getFloorSensors();
 
-        sensorsArray.forEach((el, i) => {
-            sensorsObject[el] = sensorsData[el];
+        var sensorsIds = getFloorSensors();
+        var sensorsArray = [];
+
+        sensorsIds.forEach((el, i) => {
+            var sensorsObject = sensorsData[el];
+            sensorsArray.push(sensorsObject);
         });
 
-        var airData = calculateAverageData(sensorsObject);
+        var airData = calculateAverageData(sensorsArray);
         $('#current-air-data').html(config.floorNames[currentFloorId]);
     }
     else {
-        var airData = calculateAverageData(sensorsData);
+
+        var sensorsArray = [];
+
+        for(var key in sensorsData){
+            var sensorsObject = sensorsData[key];
+            sensorsArray.push(sensorsObject);
+        }
+
+        var airData = calculateAverageData(sensorsArray);
         $('#current-air-data').html('Pavilion');
     }
     for(var key in  airData){
@@ -210,9 +220,9 @@ var updateMarkersData = function(){
                 // }
 
                 var sensorId = sensors[mapLabelsId].sensorId;
-                var tooltipBody = '<line-height=150%>TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' °C'+
+                var tooltipBody = '<line-height=150%>Temperature: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' °C'+
                     '\n' +
-                    '<line-height=150%>HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
+                    '<line-height=150%>Humidity: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
                     '\n' +
                     '<line-height=150%>HCHO: '+parseFloat(sensorsData[sensorId].hcho.toFixed(3))+
                     '\n' +
@@ -273,18 +283,18 @@ var calculateAverageData = function(dataArray) {
 
 var calculateAverageData = function(dataArray) {
     var totalsArray = [];
-    var elementsNum = Object.keys(dataArray).length;
+    var elementsNum = dataArray.length;
 
-    for (var sensorId in dataArray){
-        for (var key in dataArray[sensorId]) {
+    for (var sensorObj in dataArray){
+        for (var key in dataArray[sensorObj]) {
             if (!totalsArray[key]) {
-                if (!isNaN(dataArray[sensorId][key]) && typeof dataArray[sensorId][key] !== 'boolean') {
-                    totalsArray[key] = parseFloat(dataArray[sensorId][key]);
+                if (!isNaN(dataArray[sensorObj][key]) && typeof dataArray[sensorObj][key] !== 'boolean') {
+                    totalsArray[key] = parseFloat(dataArray[sensorObj][key]);
                 }
             }
             else {
-                if (!isNaN(dataArray[sensorId][key]) && typeof dataArray[sensorId][key] !== 'boolean') {
-                    totalsArray[key] += parseFloat(dataArray[sensorId][key]);
+                if (!isNaN(dataArray[sensorObj][key]) && typeof dataArray[sensorObj][key] !== 'boolean') {
+                    totalsArray[key] += parseFloat(dataArray[sensorObj][key]);
                 }
             }
         }
@@ -302,12 +312,14 @@ var calculateAverageData = function(dataArray) {
 var getFloorSensors = function(){
 
     var floorSensors = [];
-
+    var counter = 0;
     for(var key in sensors){
         if(sensors[key].floorId == currentFloorId){
+            counter++;
             floorSensors.push(sensors[key].sensorId);
         }
     }
+
     return floorSensors;
 };
 
