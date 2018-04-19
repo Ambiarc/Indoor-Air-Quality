@@ -4,6 +4,8 @@
 
 This project features a map of [The Pavillion](https://onemuseumplace.cn/one-museum-place/the-pavilion/), an upcoming retail space in Shanghai, China. Using the [QLEAR API](https://qlear.io), real-time indoor air quality data is displayed on the map. You can view the air quality of the entire building, each floor, or specific units.
 
+To run the project locally, add your QLEAR API key to 'config.js'.
+
 ![Alt text](screenshots/IAQ1.png?raw=true "IAQ1")
 _Exterior of the building and overall statistics._
 
