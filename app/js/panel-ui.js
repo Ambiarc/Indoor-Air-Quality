@@ -113,8 +113,15 @@ var cameraCompletedHandler = function(event){
 
 var getAirData = function(){
     if(currentFloorId !== null){
-        var sensorId = getFloorSensor();
-        var airData = sensorsData[sensorId];
+
+        var sensorsObject = {};
+        var sensorsArray = getFloorSensors();
+
+        sensorsArray.forEach((el, i) => {
+            sensorsObject[el] = sensorsData[el];
+        });
+
+        var airData = calculateAverageData(sensorsObject);
         $('#current-air-data').html(config.floorNames[currentFloorId]);
     }
     else {
@@ -237,6 +244,7 @@ var updateUIPanel = function(data){
 
 //calculating average data if floor not selected
 var calculateAverageData = function(dataArray) {
+
     var totalsArray = [];
     var elementsNum = Object.keys(dataArray).length;
 
@@ -262,13 +270,45 @@ var calculateAverageData = function(dataArray) {
     return totalsArray;
 };
 
-//fetching sensor id for current floor
-var getFloorSensor = function(){
-    for(var key in sensors){
-        if(sensors[key].floorId == currentFloorId){
-            return key;
+
+var calculateAverageData = function(dataArray) {
+    var totalsArray = [];
+    var elementsNum = Object.keys(dataArray).length;
+
+    for (var sensorId in dataArray){
+        for (var key in dataArray[sensorId]) {
+            if (!totalsArray[key]) {
+                if (!isNaN(dataArray[sensorId][key]) && typeof dataArray[sensorId][key] !== 'boolean') {
+                    totalsArray[key] = parseFloat(dataArray[sensorId][key]);
+                }
+            }
+            else {
+                if (!isNaN(dataArray[sensorId][key]) && typeof dataArray[sensorId][key] !== 'boolean') {
+                    totalsArray[key] += parseFloat(dataArray[sensorId][key]);
+                }
+            }
         }
     }
+
+    for(var key in totalsArray){
+        totalsArray[key] /= elementsNum;
+        totalsArray[key] = parseFloat(totalsArray[key].toFixed(3));
+    };
+    return totalsArray;
+};
+
+
+//fetching sensor id for current floor
+var getFloorSensors = function(){
+
+    var floorSensors = [];
+
+    for(var key in sensors){
+        if(sensors[key].floorId == currentFloorId){
+            floorSensors.push(key);
+        }
+    }
+    return floorSensors;
 };
 
 //on ambiarc sdk loaded
@@ -306,12 +346,10 @@ var onAmbiarcLoaded = function() {
 };
 
 var onEnteredFloorSelector = function(){
-    console.log("FLOOR SELECTOR ENABLED!!");
     isFloorSelectorEnabled = true;
 };
 
 var onExitedFloorSelector = function(){
-    console.log("FLOOR SELECTOR DISABLED!!");
     isFloorSelectorEnabled = false;
 }
 
