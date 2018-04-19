@@ -99,7 +99,6 @@ var cameraCompletedHandler = function(event){
 
     // 1000 is id for exterior
     if(event.detail == 1000){
-        console.log("REGISTERED 1000, CALLING EXTERIOR!!!")
         ambiarc.focusOnFloor(mainBldgID, null);
         currentFloorId = null;
         $('#bldg-floor-select').val('Exterior');
@@ -196,8 +195,8 @@ var getSensorData = function(sensorId){
 var updateMarkersData = function(){
     var counter = 0;
     for(var poiKey in ambiarc.poiList){
-        for(var sensorId in sensors){
-            if(sensors[sensorId].labelId == poiKey){
+        for(var mapLabelsId in sensors){
+            if(mapLabelsId == poiKey){
                 var currentMapLabel = ambiarc.poiList[poiKey];
                 var tooltipTitle = '<size=150%><line-height=150%>IAQ Sensor</line-height></size>' +
                     '\n<size=100%> </size>';
@@ -210,6 +209,7 @@ var updateMarkersData = function(){
                 //     }
                 // }
 
+                var sensorId = sensors[mapLabelsId].sensorId;
                 var tooltipBody = '<line-height=150%>TEMPERATURE: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' °C'+
                     '\n' +
                     '<line-height=150%>HUMIDITY: '+parseFloat(sensorsData[sensorId].humidity.toFixed(3))+' %'+
@@ -229,7 +229,7 @@ var updateMarkersData = function(){
                 currentMapLabel.tooltipTitle = tooltipTitle;
                 currentMapLabel.tooltipBody = tooltipBody;
                 currentMapLabel.showTooltip = true;
-                ambiarc.updateMapLabel(sensors[sensorId].labelId, currentMapLabel.type, currentMapLabel);
+                ambiarc.updateMapLabel(mapLabelsId, currentMapLabel.type, currentMapLabel);
             }
         }
     }
@@ -305,7 +305,7 @@ var getFloorSensors = function(){
 
     for(var key in sensors){
         if(sensors[key].floorId == currentFloorId){
-            floorSensors.push(key);
+            floorSensors.push(sensors[key].sensorId);
         }
     }
     return floorSensors;
@@ -326,9 +326,10 @@ var onAmbiarcLoaded = function() {
                     mapLabels.forEach((element, i) => {
                         var mapLabelInfo = element.properties;
                         var sensorId = element.user_properties.sensorId;
-                        sensors[sensorId] = {};
-                        sensors[sensorId].floorId = mapLabelInfo.floorId;
-                        sensors[sensorId].labelId = mapLabelInfo.id;
+                        var sensorFloorId = element.user_properties.floorId;
+                        sensors[mapLabelInfo.id] = {};
+                        sensors[mapLabelInfo.id].floorId = mapLabelInfo.floorId;
+                        sensors[mapLabelInfo.id].sensorId = sensorId;
                         ambiarc.poiList[mapLabelInfo.id] = mapLabelInfo;
                     });
                     updateMarkersData();
