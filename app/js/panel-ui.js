@@ -16,7 +16,6 @@ var iframeLoaded = function() {
 };
 
 var fillBuildingsList = function(){
-
     return new Promise(function(resolve, reject){
         var bldgListItem = document.createElement('option');
             bldgListItem.clasName = 'bldg-list-item';
@@ -29,7 +28,7 @@ var fillBuildingsList = function(){
             currentBuildingId = buildings[0];
             currentFloorId = null;
 
-            $.each(buildings, function(id, bldgValue){
+            buildings.forEach(function(bldgValue, i){
                 var bldgListItem = document.createElement('option');
                     bldgListItem.clasName = 'bldg-list-item';
                     bldgListItem.value = bldgValue;
@@ -47,7 +46,7 @@ var fillBuildingsList = function(){
                         return 0;
                     });
 
-                    $.each(floors, function(i, floorValue){
+                    floors.forEach(function(floorValue, i){
                         var listItem = document.createElement('option');
                             listItem.clasName = 'bldg-floor-item';
                             listItem.value = bldgValue+'::'+floorValue.id;
@@ -117,7 +116,7 @@ var getAirData = function(){
         var sensorsIds = getFloorSensors();
         var sensorsArray = [];
 
-        sensorsIds.forEach((el, i) => {
+        sensorsIds.forEach(function(el, i){
             var sensorsObject = sensorsData[el];
             sensorsArray.push(sensorsObject);
         });
@@ -162,12 +161,12 @@ var fetchAirData = function () {
         var promisesArray = [];
         var airDataArray = {};
 
-        config.sensorsFloors.forEach((element) => {
+        config.sensorsFloors.forEach(function(element){
             var fullUrl = urlBase + element;
             var fetchSensorData = new Promise(function (resolve, reject) {
                 fetch(fullUrl)
-                    .then(res => res.json())
-                    .then((out) => {
+                    .then(function(res){return res.json()})
+                    .then(function(out){
                         out.id = element;
                         var obj = {[element]: out};
                         airDataArray[element] = out;
@@ -189,8 +188,8 @@ var getSensorData = function(sensorId){
     return new Promise(function (resolve, reject) {
         var fullUrl = 'https://api.qlear.io/v1/monitors/latest?token='+config.gigaToken+'&identifier='+sensorId;
         fetch(fullUrl)
-            .then(res => res.json())
-            .then((out) => {
+            .then(function(res){return res.json()})
+            .then(function(out){
                 for(var key in out){
                     //checking if object key is number so we can round it to 3 decimal spaces
                     if(!isNaN(out[key]) && typeof out[key] !== 'boolean'){
@@ -208,17 +207,8 @@ var updateMarkersData = function(){
         for(var mapLabelsId in sensors){
             if(mapLabelsId == poiKey){
                 var currentMapLabel = ambiarc.poiList[poiKey];
-                var tooltipTitle = '<size=150%><line-height=150%>IAQ Sensor</line-height></size>' +
-                    '\n<size=100%> </size>';
-
+                var tooltipTitle = '<size=100%><line-height=150%>IAQ Sensor</line-height></size>\n<size=100%> </size>';
                 var tooltipBody = '';
-                //dynamically populating tooltip list
-                // for(var airDataKey in sensorsData[sensorId]){
-                //     if(!isNaN(sensorsData[sensorId][airDataKey]) && typeof sensorsData[sensorId][airDataKey] !== 'boolean'){
-                //         tooltipBody += airDataKey+': '+parseFloat(sensorsData[sensorId][airDataKey].toFixed(3))+'\n';
-                //     }
-                // }
-
                 var sensorId = sensors[mapLabelsId].sensorId;
                 var tooltipBody = '<line-height=150%>Temperature: '+parseFloat(sensorsData[sensorId].temperature.toFixed(3))+' °C'+
                     '\n' +
@@ -310,7 +300,6 @@ var calculateAverageData = function(dataArray) {
 
 //fetching sensor id for current floor
 var getFloorSensors = function(){
-
     var floorSensors = [];
     var counter = 0;
     for(var key in sensors){
@@ -319,7 +308,6 @@ var getFloorSensors = function(){
             floorSensors.push(sensors[key].sensorId);
         }
     }
-
     return floorSensors;
 };
 
@@ -334,8 +322,8 @@ var onAmbiarcLoaded = function() {
 
             // loading imported sensors labels and associating maplabel ids with directory ids
             ambiarc.loadRemoteMapLabels('Build/geodata.json', allFloors)
-                .then((mapLabels) => {
-                    mapLabels.forEach((element, i) => {
+                .then(function(mapLabels){
+                    mapLabels.forEach(function(element, i){
                         var mapLabelInfo = element.properties;
                         var sensorId = element.user_properties.sensorId;
                         var sensorFloorId = element.user_properties.floorId;
@@ -350,10 +338,8 @@ var onAmbiarcLoaded = function() {
             // Loading imported units points
             ambiarc.loadRemoteMapLabels('Build/output.json', allFloors);
         });
-
     ambiarc.registerForEvent(ambiarc.eventLabel.CameraMotionCompleted, cameraCompletedHandler);
     ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelected, onFloorSelected);
-
     ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelectorEnabled, onEnteredFloorSelector);
     ambiarc.registerForEvent(ambiarc.eventLabel.FloorSelectorDisabled, onExitedFloorSelector);
 };
@@ -364,7 +350,7 @@ var onEnteredFloorSelector = function(){
 
 var onExitedFloorSelector = function(){
     isFloorSelectorEnabled = false;
-}
+};
 
 
 $(document).ready(function() {
